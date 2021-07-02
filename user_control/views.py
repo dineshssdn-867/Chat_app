@@ -110,3 +110,10 @@ class RefreshView(APIView):
         active_jwt.save()
 
         return Response({"access": access, "refresh": refresh})
+
+class GetSecuredInfo(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        print(request.user)
+        return Response({"data": "This is a secured info"})
