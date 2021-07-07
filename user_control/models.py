@@ -61,7 +61,7 @@ class UserProfile(models.Model):
     last_name = models.CharField(max_length=100)
     caption = models.CharField(max_length=250)
     about = models.TextField()
-    profile_picture = models.ImageField(blank=True, null=True, default='users/person-icon-blue-7560_vad8ci.png', upload_to='users/')
+    profile_picture = models.ImageField(blank=True, null=True, default='/static/person-icon-blue-7560.png', upload_to='users/')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

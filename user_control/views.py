@@ -1,17 +1,19 @@
 import jwt
-from .models import Jwt, CustomUser
+from .models import Jwt, CustomUser, UserProfile
 from datetime import datetime, timedelta
 from django.conf import settings
 import random
 import string
 from rest_framework.views import APIView
-from .serializers import LoginSerializer, RegisterSerializer, RefreshSerializer
+from .serializers import LoginSerializer, RegisterSerializer, RefreshSerializer, UserProfileSerializer
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from .authentication import Authentication
 from rest_framework.viewsets import ModelViewSet
 import re
 from django.db.models import Q, Count, Subquery, OuterRef
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
 
 
 def get_random(length):
@@ -82,7 +84,11 @@ class RegisterView(APIView):
 
         username = serializer.validated_data.pop("username")
 
-        CustomUser.objects.create_user(username=username, **serializer.validated_data)
+        try:
+            CustomUser.objects.create_user(username=username, **serializer.validated_data)
+        except Exception:
+            return Response({"error": "user already exits"}, status="400")
+        
 
         return Response({"success": "User created."}, status=201)
 
@@ -111,3 +117,7 @@ class RefreshView(APIView):
 
         return Response({"access": access, "refresh": refresh})
 
+class UserProfileView(ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = (IsAuthenticated, )
