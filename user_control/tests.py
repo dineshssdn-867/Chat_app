@@ -78,7 +78,7 @@ class TestAuth(APITestCase):
         self.assertTrue(result["access"])
         self.assertTrue(result["refresh"])
 
-    '''def test_refresh(self):
+    def test_refresh(self):
         payload = {
             "username": "adefemigreat",
             "password": "ade123",
@@ -103,4 +103,3 @@ class TestAuth(APITestCase):
         # check that we obtained both the refresh and access token
         self.assertTrue(result["access"])
         self.assertTrue(result["refresh"])
-'''

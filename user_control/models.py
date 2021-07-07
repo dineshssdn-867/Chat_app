@@ -52,3 +52,21 @@ class Jwt(models.Model):
     refresh = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(
+        CustomUser, related_name="user_profile", on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    caption = models.CharField(max_length=250)
+    about = models.TextField()
+    profile_picture = models.ImageField(blank=True, null=True, default='users/person-icon-blue-7560_vad8ci.png', upload_to='users/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        ordering = ("created_at",)
