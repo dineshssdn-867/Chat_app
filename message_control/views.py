@@ -25,6 +25,9 @@ class MessageView(ModelViewSet):
             pass
         attachments = request.data.pop("attachments", None)
 
+        if str(request.user.id) != str(request.data.get("sender_id", None)):
+            raise Exception("only sender can create a message")
+
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
