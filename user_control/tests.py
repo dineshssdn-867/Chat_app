@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from .views import get_random, get_access_token, get_refresh_token
-from .models import CustomUser
+from .models import CustomUser, UserProfile
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from six import BytesIO
@@ -174,5 +174,82 @@ class TestUserInfo(APITestCase):
         self.assertEqual(result["last_name"], "Greate")
         self.assertEqual(result["user"]["username"], "adefemigreat")
         self.assertEqual(result["profile_picture"]["id"], 1) 
+    
+    def test_update_user_profile(self):
+        payload = {
+            "user_id": self.user.id,
+            "first_name": "Adefemi",
+            "last_name": "Greate",
+            "caption": "Being alive is different from living",
+            "about": "I am a passionation lover of ART, graphics and creation"
+        }
+
+        response = self.client.post(
+            self.profile_url, data=payload)
+
+        result = response.json()
+        # --- created profile
+
+        payload = {
+            "first_name": "Ade",
+            "last_name": "Great",
+        }
+
+        url = self.profile_url + '/' + str(result['id']) 
+
+        response = self.client.patch(url, data=payload)
+        result = response.json()
+        print(result)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result["first_name"], "Ade")
+        self.assertEqual(result["last_name"], "Great")
+        self.assertEqual(result["user"]["username"], "adefemigreat")
+
+    
+    def test_user_search(self):
+
+        UserProfile.objects.create(user=self.user, first_name="Adefemi", last_name="oseni",
+                                   caption="live is all about living", about="I'm a youtuber")
+
+        user2 = CustomUser.objects.create_user(
+            username="tester", password="tester123", email="adefemi@yahoo.com")
+        UserProfile.objects.create(user=user2, first_name="Vester", last_name="Mango",
+                                   caption="it's all about testing", about="I'm a youtuber")
+
+        user3 = CustomUser.objects.create_user(
+            username="vasman", password="vasman123", email="adefemi@yahoo.com2")
+        UserProfile.objects.create(user=user3, first_name="Adeyemi", last_name="Boseman",
+                                   caption="it's all about testing", about="I'm a youtuber")
+
+        # test keyword = adefemi oseni
+        url = self.profile_url + "?keyword=adefemi oseni"
+
+        response = self.client.get(url)
+        result = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(result), 1)
+
+        # test keyword = ade
+        url = self.profile_url + "?keyword=ade"
+
+        response = self.client.get(url)
+        result = response.json()
+        print(result)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(result), 3)
+        self.assertEqual(result[2]["user"]["username"], "vasman")
+
+
+        # test keyword = vester
+        url = self.profile_url + "?keyword=vester"
+
+        response = self.client.get(url)
+        result = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["user"]["username"], "tester")
 
         

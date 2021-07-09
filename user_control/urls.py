@@ -6,7 +6,7 @@ from .views import *
 
 router = DefaultRouter(trailing_slash = False)
 
-router.register("profile", UserProfileView)
+router.register(r"profile", UserProfileView)
 
 urlpatterns = [
     path('', include(router.urls)),
