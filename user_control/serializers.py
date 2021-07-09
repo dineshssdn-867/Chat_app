@@ -20,7 +20,7 @@ class RefreshSerializer(serializers.Serializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ("password",)
+        exclude = ("password",)
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer(read_only=True)

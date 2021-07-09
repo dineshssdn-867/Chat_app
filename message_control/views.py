@@ -33,7 +33,7 @@ class MessageView(ModelViewSet):
         serializer.save()
 
         if attachments:
-            MessageAttachment.object.bulk_create([MessageAttachment(**attachment, message_id=serializer.data["id"]) for attachment in attachments])
+            MessageAttachment.objects.bulk_create([MessageAttachment(**attachment, message_id=serializer.data["id"]) for attachment in attachments])
             message_data = self.get_queryset().get(id=serializer.data["id"])
             return Response(self.serializer_class(message_data).data, status=201)
         

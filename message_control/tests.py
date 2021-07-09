@@ -37,7 +37,8 @@ class TestFileUpload(APITestCase):
         self.assertEqual(result["id"], 1)
 
 class TestMessage(APITestCase):
-    message_url = "/message/message"
+    message_url = "/message/message"    
+    file_upload_url = "/message/file-upload"
 
     def setUp(self):
         from user_control.models import CustomUser, UserProfile
@@ -73,7 +74,6 @@ class TestMessage(APITestCase):
             "sender_id": self.sender.id,
             "receiver_id": self.receiver.id,
             "message": "test message",
-
         }
 
         # processing
@@ -86,3 +86,95 @@ class TestMessage(APITestCase):
         self.assertEqual(result["message"], "test message")
         self.assertEqual(result["sender"]["user"]["username"], "sender")
         self.assertEqual(result["receiver"]["user"]["username"], "payload_receiver")
+
+    def test_post_with_file(self):
+
+        # create a file
+        avatar = create_image(None, 'avatar.png')
+        avatar_file = SimpleUploadedFile('front1.png', avatar.getvalue())
+        data = {
+            "file_upload": avatar_file
+        }
+        response = self.client.post(
+            self.file_upload_url, data=data)
+        file_content = response.json()["id"]
+
+        payload = {
+            "sender_id": self.sender.id,
+            "receiver_id": self.receiver.id,
+            "message": "test message",
+            "attachments": [
+                {
+                    "caption": "nice stuff",
+                    "attachment_id": file_content
+                },
+                {
+                    "attachment_id": file_content
+                }
+            ]
+        }
+
+        # processing
+        response = self.client.post(self.message_url, data=json.dumps(
+            payload), content_type='application/json')
+        result = response.json()
+
+        # assertions
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(result["message"], "test message")
+        self.assertEqual(result["sender"]["user"]["username"], "sender")
+        self.assertEqual(result["receiver"]["user"]["username"], "payload_receiver")
+        self.assertEqual(result["message_attachments"]
+                         [0]["attachment"]["id"], 1)
+        self.assertEqual(result["message_attachments"]
+                         [0]["caption"], "nice stuff")
+
+    def test_update_message(self):
+
+        # create message
+        payload = {
+            "sender_id": self.sender.id,
+            "receiver_id": self.receiver.id,
+            "message": "test message",
+
+        }
+        self.client.post(self.message_url, data=payload)
+
+        # update message
+        payload = {
+            "message": "test message updated",
+            "is_read": True
+        }
+        response = self.client.patch(
+            self.message_url+"/1", data=payload)
+        result = response.json()
+
+        # assertions
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(result["message"], "test message updated")
+        self.assertEqual(result["is_read"], True)
+
+    def test_delete_message(self):
+
+        # create message
+        payload = {
+            "sender_id": self.sender.id,
+            "receiver_id": self.receiver.id,
+            "message": "test message",
+
+        }
+        self.client.post(self.message_url, data=payload)
+
+        response = self.client.delete(
+            self.message_url+"/1", data=payload)
+
+        # assertions
+        self.assertEqual(response.status_code, 204)
+
+    def test_get_message(self):
+
+        response = self.client.get(
+            self.message_url+f"?user_id={self.receiver.id}")
+        result = response.json()
+
+        self.assertEqual(response.status_code, 200)    
