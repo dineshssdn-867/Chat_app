@@ -121,10 +121,6 @@ class UserProfileView(ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
-    def get(self, request, *args, **kwargs):
-        id=kwargs['id']
-        return Response(UserProfile.objects.get(id=id))
-
     def get_queryset(self):
         if self.request.method.lower() != "get":
             return self.queryset
