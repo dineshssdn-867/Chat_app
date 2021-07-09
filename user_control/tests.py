@@ -1,7 +1,21 @@
 from rest_framework.test import APITestCase
 from .views import get_random, get_access_token, get_refresh_token
 from .models import CustomUser
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
+from six import BytesIO
+from PIL import Image
+import json
 
+
+def create_image(storage, filename, size=(100, 100), image_mode='RGB', image_format='PNG'):
+    data = BytesIO()
+    Image.new(image_mode, size).save(data, image_format)
+    data.seek(0)
+    if not storage:
+        return data
+    image_file = ContentFile(data.read())
+    return storage.save(filename, image_file)
 
 
 class TestGenericFunctions(APITestCase):
@@ -106,6 +120,7 @@ class TestAuth(APITestCase):
 
 class TestUserInfo(APITestCase):
     profile_url = '/user/profile'
+    file_upload_url = "/message/file-upload"
     def setUp(self):    
         self.user = CustomUser.objects.create(username="adefemigreat", password="ade123", email="adefemigreat@yahoo.com")
 
@@ -129,18 +144,17 @@ class TestUserInfo(APITestCase):
         self.assertEqual(result["user"]["username"], "adefemigreat")
 
     
-""" def test_post_user_profile_with_profile_picture(self):
+    def test_post_user_profile_with_profile_picture(self):
 
         # upload image
-        avatar = create_image(None, 'avatar.png')
+        avatar = create_image(None, 'front.png')
         avatar_file = SimpleUploadedFile('front.png', avatar.getvalue())
         data = {
             "file_upload": avatar_file
         }
 
         # processing
-        response = self.client.post(
-            self.file_upload_url, data=data, **self.bearer)
+        response = self.client.post(self.file_upload_url, data=data)
         result = response.json()
 
         payload = {
@@ -152,12 +166,13 @@ class TestUserInfo(APITestCase):
             "profile_picture_id": result["id"]
         }
 
-        response = self.client.post(
-            self.profile_url, data=payload, **self.bearer)
+        response = self.client.post(self.profile_url, data=payload)
         result = response.json()
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(result["first_name"], "Adefemi")
         self.assertEqual(result["last_name"], "Greate")
         self.assertEqual(result["user"]["username"], "adefemigreat")
-        self.assertEqual(result["profile_picture"]["id"], 1) """
+        self.assertEqual(result["profile_picture"]["id"], 1) 
+
+        

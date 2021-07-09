@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'user_control',
     'chatapi',
     'debug_toolbar',
-    'cloudinary_storage',
+    'message_control',
 ]
 
 AUTH_USER_MODEL = "user_control.CustomUser"
@@ -140,15 +140,20 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 MEDIA_URL = '/chat/'
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('cloud_name'),
-    'API_KEY': config('api_key'),
-    'API_SECRET': config('api_secret'),
+AWS_ACCESS_KEY_ID = config('AWSAccessKeyId')
+AWS_SECRET_ACCESS_KEY = config('AWSSecretKey')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_HOST_REGION = config('AWS_HOST_REGION')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_DEFAULT_ACL = None
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
 }
 
+
+DEFAULT_FILE_STORAGE = 'chatapi.storage_backends.MediaStorage'
