@@ -204,10 +204,8 @@ class TestUserInfo(APITestCase):
         self.assertEqual(result["first_name"], "Ade")
         self.assertEqual(result["last_name"], "Great")
         self.assertEqual(result["user"]["username"], "adefemigreat")
-
     
     def test_user_search(self):
-
         UserProfile.objects.create(user=self.user, first_name="Adefemi", last_name="oseni",
                                    caption="live is all about living", about="I'm a youtuber")
 
@@ -225,7 +223,7 @@ class TestUserInfo(APITestCase):
         url = self.profile_url + "?keyword=adefemi oseni"
 
         response = self.client.get(url)
-        result = response.json()
+        result = response.json()["results"]
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(result), 1)
@@ -234,19 +232,17 @@ class TestUserInfo(APITestCase):
         url = self.profile_url + "?keyword=ade"
 
         response = self.client.get(url)
-        result = response.json()
-        print(result)
+        result = response.json()["results"]
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(result), 3)
         self.assertEqual(result[2]["user"]["username"], "vasman")
 
-
         # test keyword = vester
         url = self.profile_url + "?keyword=vester"
 
         response = self.client.get(url)
-        result = response.json()
+        result = response.json()["results"]
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(result), 1)
