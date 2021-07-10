@@ -247,5 +247,7 @@ class TestUserInfo(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["user"]["username"], "tester")
+        self.assertEqual(result[0]["message_count"], 0)
+
 
         
