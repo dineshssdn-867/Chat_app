@@ -1,0 +1,19 @@
+{
+  "name": "Chat_app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/dineshssdn-867/Chat_app.git",
+  "author": "dineshssdn-867 <seemanariani30@gmail.com>",
+  "license": "MIT",
+
+  "scripts": {
+    "start":"node index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "http": "0.0.0",
+    "socket.io": "^2.3.0"
+  }
+}
