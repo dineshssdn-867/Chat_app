@@ -18,6 +18,7 @@ app.use(bodyParser.json());
 
 app.post("/server", (req, res) => {
   io.emit("command", req.body);
+  console.log(req.body);
   res.status(201).json({ status: "reached" });
 });
 
@@ -25,7 +26,6 @@ let io = require("socket.io").listen(server);
 
 io.on("connection", (socket) => {
   socket.on("command", function (data) {
-    console.log(data);
     io.emit("command", data);
   });
 });

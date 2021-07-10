@@ -199,7 +199,6 @@ class TestUserInfo(APITestCase):
 
         response = self.client.patch(url, data=payload)
         result = response.json()
-        print(result)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result["first_name"], "Ade")
         self.assertEqual(result["last_name"], "Great")

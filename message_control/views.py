@@ -9,6 +9,24 @@ import requests
 import json
 
 
+def handleRequest(serializerData):
+    notification = {
+        "message": serializerData.data.get("message"),
+        "from": serializerData.data.get("sender"),
+        "receiver": serializerData.data.get("receiver").get("id")
+    }
+
+    headers = {
+        'Content-Type': 'application/json',
+    }
+    try:
+        requests.post(settings.SOCKET_SERVER, json.dumps(
+            notification), headers=headers)
+    except Exception as e:
+        pass
+    return True
+
+
 class GenericFileUploadView(ModelViewSet):
     queryset = GenericFileUpload.objects.all()
     serializer_class = GenericFileUploadSerializer
@@ -52,6 +70,7 @@ class MessageView(ModelViewSet):
             message_data = self.get_queryset().get(id=serializer.data["id"])
             return Response(self.serializer_class(message_data).data, status=201)
 
+        handleRequest(serializer)
 
         return Response(serializer.data, status=201)
 
@@ -78,6 +97,7 @@ class MessageView(ModelViewSet):
             message_data = self.get_object()
             return Response(self.serializer_class(message_data).data, status=200)
 
+        handleRequest(serializer)
 
         return Response(serializer.data, status=200)
 
