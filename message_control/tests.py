@@ -153,6 +153,21 @@ class TestMessage(APITestCase):
         self.assertEqual(result["message"], "test message updated")
         self.assertEqual(result["is_read"], True)
 
+    def test_get_message(self):
+        # create message
+        payload = {
+            "sender_id": self.sender.id,
+            "receiver_id": self.receiver.id,
+            "message": "test message",
+
+        }
+        self.client.post(self.message_url, data=payload)
+
+        response = self.client.get(
+            self.message_url+f"?user_id={self.receiver.id}")
+        result = response.json()
+        self.assertEqual(response.status_code, 200) 
+
     def test_delete_message(self):
 
         # create message
@@ -168,12 +183,4 @@ class TestMessage(APITestCase):
             self.message_url+"/1", data=payload)
 
         # assertions
-        self.assertEqual(response.status_code, 204)
-
-    def test_get_message(self):
-
-        response = self.client.get(
-            self.message_url+f"?user_id={self.receiver.id}")
-        result = response.json()
-
-        self.assertEqual(response.status_code, 200)    
+        self.assertEqual(response.status_code, 204)   

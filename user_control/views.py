@@ -15,6 +15,7 @@ from django.db.models import Q, Count, Subquery, OuterRef
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import PageNumberPagination
+from chatapi.custom_methods import IsAuthenticatedCustom
 
 
 def get_random(length):
@@ -121,6 +122,7 @@ class RefreshView(APIView):
 class UserProfileView(ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    permission_classes=(IsAuthenticatedCustom, )
 
     def get_queryset(self):
         if self.request.method.lower() != "get":
