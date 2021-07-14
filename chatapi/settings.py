@@ -151,11 +151,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
