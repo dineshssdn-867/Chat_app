@@ -180,3 +180,14 @@ class MeView(APIView):
                 }
             }
         return Response(data, status=200)
+    
+    
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticatedCustom, )
+
+    def get(self, request):
+        user_id = request.user.id
+
+        Jwt.objects.filter(user_id=user_id).delete()
+
+        return Response("logged out successfully", status=200)
