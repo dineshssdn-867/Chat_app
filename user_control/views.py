@@ -161,3 +161,22 @@ class UserProfileView(ModelViewSet):
     @staticmethod
     def normalize_query(query_string, findterms=re.compile(r'"([^"]+)"|(\S+)').findall, normspace=re.compile(r'\s{2,}').sub):
         return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)]
+    
+    
+    
+    
+class MeView(APIView):
+    permission_classes = (IsAuthenticatedCustom, )
+    serializer_class = UserProfileSerializer
+       
+    def get(self, request):
+        data = {}
+        try:
+            data = self.serializer_class(request.user.user_profile).data
+        except Exception:
+            data = {
+                "user": {
+                    "id": request.user.id
+                }
+            }
+        return Response(data, status=200)
