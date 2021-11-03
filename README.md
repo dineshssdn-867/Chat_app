@@ -42,7 +42,7 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd Blog
+  cd Chat_app
 ```
 
 Create Environement and install dependencies
@@ -75,7 +75,7 @@ You can register as a user
 
 ## Tech Stack👨‍💻
 
-**Backend:** Django, AWS S3, Nginx, Caching Services, Certbot, Docker, Docker-compose, Cloudflare
+**Backend:** Django, AWS S3, Nginx, Caching Services, Certbot, Docker, Docker-compose, Cloudflare, Digitalocean
 
 [emoji key](https://allcontributors.org/docs/en/emoji-key)
 
