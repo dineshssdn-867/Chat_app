@@ -1,6 +1,6 @@
 <div align="center">
   
-<img src="https://d-fantom-blog.herokuapp.com/static/img/ds-d-s-purple-letter-logo-design-with-creative-liquid-effect-flowing-vector-illustration-MFR65B.png">
+<img src="https://camo.githubusercontent.com/24cec635191128fc504cfaa08de7eecde66eac9cefeb939e8d6c49a1c592ba36/68747470733a2f2f7265732e636c6f7564696e6172792e636f6d2f64696e65736873636c6f75642f696d6167652f75706c6f61642f76313632323733333135312f35373136353863643265633436356130386532646332636633303235383032335f6f33687234782e706e67">
   
 </div>
 
@@ -16,7 +16,7 @@ Personal Project - D's Chat App Backend
 
 ## Demo💻
 
-[Demo](https://d-fantom-blog.herokuapp.com/)
+[Demo](https://d-s-chat.web.app/login)
 
 ## Environment Variables⚙
 
